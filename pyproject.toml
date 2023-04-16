@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "zelda-astar"
+version = "0.1.0"
+description = ""
+authors = ["eduardo machado <eduardoshy1@gmail.com>"]
+readme = "README.md"
+packages = [{include = "zelda_astar"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pygame = "^2.3.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
