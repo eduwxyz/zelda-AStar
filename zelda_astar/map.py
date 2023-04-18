@@ -64,6 +64,8 @@ class Spot:
 
 
 
+#FIXME: criar lógica para cores
+
 def make_grid(rows: int, width: int) -> List[List[Spot]]:
     """
     Create a grid of spots.
