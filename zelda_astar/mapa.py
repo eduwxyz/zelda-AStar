@@ -1,0 +1,70 @@
+def mapa_principal():
+    # Define as cores
+    GREEN = (0, 255, 0)
+    LIGHT_GREEN = (144, 238, 144)
+    BLUE = (0, 0, 255)
+    LIGHT_BLUE = (173, 216, 230)
+    BROWN = (165, 42, 42)
+    LIGHT_BROWN = (244, 164, 96)
+    DARK_GREEN = (34, 139, 34)
+
+    # Define as constantes para os tipos de terreno e seus respectivos custos
+    GRAMA = 10
+    AREIA = 20
+    FLORESTA = 100
+    MONTANHA = 150
+    AGUA = 180
+
+    # Define as matrizes 2D para os terrenos
+    line0 = [FLORESTA]*12 + [MONTANHA]*24
+    line1 = [FLORESTA, GRAMA, GRAMA, FLORESTA, GRAMA, FLORESTA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, MONTANHA]*2 + [MONTANHA]*6 + [AREIA]*3 + [MONTANHA]*4 + [AREIA]*5 + [MONTANHA]*4 + [MONTANHA]*5
+    line2 = [FLORESTA, GRAMA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, FLORESTA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, MONTANHA, MONTANHA, MONTANHA]*2 + [AREIA]*3 + [MONTANHA]*4 + [AREIA]*6 + [MONTANHA]*4 + [MONTANHA]*4
+    line3 = [FLORESTA, GRAMA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, FLORESTA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, MONTANHA, MONTANHA, MONTANHA]*2 + [AREIA]*3 + [MONTANHA]*4 + [AREIA]*6 + [MONTANHA]*4 + [MONTANHA]*4
+    line4 = [FLORESTA, GRAMA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, FLORESTA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, MONTANHA, MONTANHA, MONTANHA]*2 + [AREIA]*3 + [MONTANHA]*4 + [AREIA]*6 + [MONTANHA]*4 + [MONTANHA]*4
+    line5 = [FLORESTA, GRAMA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, FLORESTA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, MONTANHA, MONTANHA, MONTANHA]*2 + [AREIA]*3 + [MONTANHA]*4 + [AREIA]*6 + [MONTANHA]*4 + [MONTANHA]*4
+    line6 = [FLORESTA, GRAMA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, FLORESTA, GRAMA, FLORESTA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, GRAMA, MONTANHA, MONTANHA, MONTANHA]*2 + [AREIA]*3 + [MONTANHA]*4 + [AREIA]*6 + [MONTANHA]*4 + [MONTANHA]*4
+    line7 = [GRAMA]*12 + [MONTANHA]*24
+    line8 = [AGUA]*42
+    line9 = [GRAMA]*12 + [MONTANHA]*24
+    line10 = [MONTANHA]*10 + [GRAMA]*10 + [AREIA]*10
+    line11 = [FLORESTA]*4 + [GRAMA]*12 + [MONTANHA]*16 + [AREIA]*4
+    line12 = [GRAMA]*10 + [AREIA]*5 + [MONTANHA]*5 + [FLORESTA]*5 + [AGUA]*5
+    line13 = [AGUA]*5 + [MONTANHA]*5 + [FLORESTA]*5 + [AREIA]*5 + [GRAMA]*5 + [MONTANHA]*5
+    line14 = [FLORESTA]*8 + [GRAMA]*16 + [MONTANHA]*8 + [AREIA]*4
+    line15 = [FLORESTA]*10 + [GRAMA]*10 + [MONTANHA]*6 + [AREIA]*4 + [AGUA]*6
+    line16 = [GRAMA]*15 + [MONTANHA]*10 + [AREIA]*5 + [AGUA]*6 + [FLORESTA]*4
+    line17 = [AREIA]*10 + [MONTANHA]*10 + [GRAMA]*10 + [AGUA]*6
+    line18 = [AGUA]*10 + [MONTANHA]*10 + [AREIA]*8 + [GRAMA]*8 + [FLORESTA]*4
+    line19 = [FLORESTA]*12 + [MONTANHA]*8 + [AREIA]*6 + [GRAMA]*6 + [AGUA]*4
+    line20 = [GRAMA]*10 + [AREIA]*10 + [MONTANHA]*8 + [AGUA]*4 + [FLORESTA]*4 + [MONTANHA]*4
+    line21 = [FLORESTA]*8 + [GRAMA]*12 + [MONTANHA]*12 + [AREIA]*2 + [AGUA]*2 + [MONTANHA]*2
+    line22 = [AREIA]*10 + [GRAMA]*10 + [FLORESTA]*6 + [MONTANHA]*6 + [AGUA]*4
+    line23 = [AGUA]*8 + [GRAMA]*12 + [MONTANHA]*10 + [FLORESTA]*6 + [AREIA]*4
+    line24 = [FLORESTA]*10 + [MONTANHA]*8 + [AREIA]*6 + [GRAMA]*6 + [AGUA]*6 + [MONTANHA]*4
+    line25 = [GRAMA]*12 + [MONTANHA]*12 + [AGUA]*6 + [FLORESTA]*4 + [AREIA]*2 + [MONTANHA]*2 + [AGUA]*2
+    line26 = [AREIA]*12 + [GRAMA]*12 + [MONTANHA]*8 + [FLORESTA]*4 + [AGUA]*4
+    line27 = [FLORESTA]*10 + [MONTANHA]*8 + [AGUA]*6 + [AREIA]*6 + [GRAMA]*6
+    line28 = [MONTANHA]*8 + [AREIA]*8 + [GRAMA]*8 + [FLORESTA]*6 + [AGUA]*6
+    line29 = [AGUA]*10 + [AGUA]*10 + [GRAMA]*8 + [GRAMA]*4 + [FLORESTA]*4 + [AREIA]*4
+    line30 = [MONTANHA]*6 + [GRAMA]*12 + [MONTANHA]*12 + [AGUA]*6 + [AREIA]*4
+    line31 = [FLORESTA]*6 + [GRAMA]*12 + [MONTANHA]*12 + [AGUA]*6 + [AREIA]*4
+    line32 = [MONTANHA]*10 + [FLORESTA]*8 + [AREIA]*6 + [GRAMA]*6 + [AGUA]*6
+    line33 = [GRAMA]*12 + [MONTANHA]*10 + [AGUA]*6 + [AREIA]*6 + [FLORESTA]*6
+    line34 = [AGUA]*10 + [GRAMA]*8 + [MONTANHA]*8 + [FLORESTA]*8 + [AREIA]*2
+    line35 = [AREIA]*10 + [MONTANHA]*10 + [FLORESTA]*8 + [GRAMA]*6 + [AGUA]*6
+    line36 = [FLORESTA]*10 + [GRAMA]*10 + [MONTANHA]*6 + [AREIA]*4 + [AGUA]*6 + [MONTANHA]*4
+    line37 = [GRAMA]*15 + [MONTANHA]*8 + [AREIA]*4 + [AGUA]*4 + [FLORESTA]*4 + [MONTANHA]*5
+    line38 = [AGUA]*12 + [MONTANHA]*8 + [AREIA]*6 + [GRAMA]*6 + [FLORESTA]*4 + [AGUA]*4
+    line39 = [FLORESTA]*10 + [MONTANHA]*10 + [AREIA]*6 + [GRAMA]*6 + [AGUA]*4 + [MONTANHA]*4
+    line40 = [MONTANHA]*10 + [AREIA]*10 + [GRAMA]*8 + [FLORESTA]*6 + [AGUA]*6
+    line41 = [GRAMA]*12 + [MONTANHA]*8 + [AREIA]*6 + [FLORESTA]*6 + [AGUA]*8
+    line42 = [AREIA]*10 + [GRAMA]*10 + [MONTANHA]*10 + [FLORESTA]*4 + [AGUA]*2 + [MONTANHA]*4
+
+
+    mapa = [line0, line1, line2, line3, line4, line5, line6, line7, 
+            line8, line9, line10, line11, line12, line13, line14, line15, line16, line17, 
+            line18, line19, line20, line21, line22, line23, line24, line25, line26, line27, 
+            line28, line29, line30, line31, line32, line33, line34, line35, line36, line37, line38, 
+            line39, line40, line41, line42]
+    
+    return mapa
