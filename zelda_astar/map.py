@@ -1,11 +1,15 @@
 import math
 from queue import PriorityQueue
 from typing import List, Tuple
-from zelda_astar.colors import colors
 
 import pygame
 
-WIDTH = 800
+from zelda_astar.colors import colors
+
+
+colors = colors()
+
+WIDTH = 672
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("Zelda A*")
 
@@ -26,7 +30,7 @@ class Spot:
     A class to represent a spot on a grid.
     """
 
-    def __init__(self, row: int, col: int, width: int, total_rows: int):
+    def __init__(self, row: int, col: int, width: int, total_rows: int, color, cost, t):
         """
         Initialize the Spot class.
 
@@ -40,10 +44,13 @@ class Spot:
         self.col = col
         self.x = row * width
         self.y = col * width
-        self.color = (255, 255, 255)  # Define a cor como um atributo da classe.
+        self.color = color
+        self.cost = cost
+        self.color = color  # Define a cor como um atributo da classe.
         self.neighbors = []
         self.width = width
         self.total_rows = total_rows
+        self.t = t
 
     def get_pos(self) -> Tuple[int, int]:
         """
@@ -66,43 +73,48 @@ class Spot:
 
 def read_map() -> dict:
     maps = {}
+    
     current_map = ""
     with open("mapa_principal.txt", "r") as file:
         for line in file:
             line = line.strip()
 
-            if not line:  # Ignora linha vazia
+            if not line:  
                 continue
 
             if line.startswith("#"):
                 current_map = line.lstrip("#").strip()
-                maps.setdefault(current_map, [])  # Inicializa a lista de linhas do mapa atual
+                maps.setdefault(current_map, [])  
 
             else:
                 maps[current_map].append(line)
+        
 
     return maps
 
 
-def make_grid(rows: int, width: int) -> List[List[Spot]]:
+def make_grid(maps=read_map(), title= "HYRULE", width=WIDTH) -> List[List[Spot]]:
     """
     Create a grid of spots.
 
     Args:
-        rows (int): The number of rows in the grid.
+        maps (dict): The maps to create the grid.
         width (int): The width of the grid.
 
     Returns:
         List[List[Spot]]: The grid of spots.
     """
-    grid = []
+    grid = maps[title]
+    rows = len(grid)
     gap = width // rows
+    aux = []
+    
 
     # Validar argumentos
     if rows <= 0 or width <= 0:
         raise ValueError("rows and width must be positive integers")
 
-    def create_spot(i: int, j: int, gap: int, rows: int) -> Spot:
+    def create_spot(i: int, j: int, gap: int, rows: int, color, cost, t) -> Spot:
         """
         Create a Spot object.
 
@@ -111,19 +123,22 @@ def make_grid(rows: int, width: int) -> List[List[Spot]]:
             j (int): The column index of the spot.
             gap (int): The width of the spot.
             rows (int): The total number of rows in the grid.
+            color (Tuple[int, int, int]): The color of the spot.
+            cost (int): The cost of the spot.
 
         Returns:
             Spot: The created spot.
         """
-        return Spot(i, j, gap, rows)
+        return Spot(i, j, gap, rows, color, cost, t)
 
+    
     for i in range(rows):
-        grid.append([])
         for j in range(rows):
-            spot = create_spot(i, j, gap, rows)
-            grid[i].append(spot)
+            spot = create_spot(i, j, gap, rows, colors[grid[i][j]]["color"], colors[grid[i][j]]["cost"], grid[i][j])
+            #breakpoint()
+            aux.append([spot])
 
-    return grid
+    return aux
 
 
 def draw_grid(win, rows: int, width: int) -> None:
@@ -159,7 +174,6 @@ def draw(win, grid: List[List[Spot]], rows: int, width: int) -> None:
     Returns:
         None
     """
-    win.fill(WHITE)
 
     for row in grid:
         for spot in row:
@@ -169,6 +183,6 @@ def draw(win, grid: List[List[Spot]], rows: int, width: int) -> None:
     pygame.display.update()
 
 
-grid = make_grid(50, WIDTH)
+grid = make_grid()
 while True: 
     draw(WIN, grid, 42, WIDTH)
