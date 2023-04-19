@@ -186,3 +186,7 @@ def draw(win, grid: List[List[Spot]], rows: int, width: int) -> None:
 grid = make_grid()
 while True: 
     draw(WIN, grid, 42, WIDTH)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+    
