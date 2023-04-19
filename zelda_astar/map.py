@@ -1,6 +1,7 @@
 import math
 from queue import PriorityQueue
 from typing import List, Tuple
+from zelda_astar.colors import colors
 
 import pygame
 
@@ -63,8 +64,25 @@ class Spot:
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
 
 
+def read_map() -> dict:
+    maps = {}
+    current_map = ""
+    with open("mapa_principal.txt", "r") as file:
+        for line in file:
+            line = line.strip()
 
-#FIXME: criar lógica para cores
+            if not line:  # Ignora linha vazia
+                continue
+
+            if line.startswith("#"):
+                current_map = line.lstrip("#").strip()
+                maps.setdefault(current_map, [])  # Inicializa a lista de linhas do mapa atual
+
+            else:
+                maps[current_map].append(line)
+
+    return maps
+
 
 def make_grid(rows: int, width: int) -> List[List[Spot]]:
     """
@@ -151,3 +169,6 @@ def draw(win, grid: List[List[Spot]], rows: int, width: int) -> None:
     pygame.display.update()
 
 
+grid = make_grid(50, WIDTH)
+while True: 
+    draw(WIN, grid, 42, WIDTH)
