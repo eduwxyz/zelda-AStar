@@ -23,6 +23,7 @@ PURPLE = (128, 0, 128)
 ORANGE = (255, 165, 0)
 GREY = (128, 128, 128)
 TURQUOISE = (64, 224, 208)
+ROSA = (255, 0, 255)
 
 
 class Spot:
@@ -136,6 +137,16 @@ def make_grid(maps=read_map(), title= "HYRULE", width=WIDTH) -> List[List[Spot]]
         for j in range(rows):
             spot = create_spot(i, j, gap, rows, colors[grid[i][j]]["color"], colors[grid[i][j]]["cost"], grid[i][j])
             #breakpoint()
+            if i == 25 and j == 28: # Posição inicial
+                spot.color = BLACK
+            if i == 7 and j == 6: # Posição final
+                spot.color = ROSA
+            if i == 6 and j == 33: #dunger 1
+                spot.color = PURPLE
+            if i == 40 and j == 18: #dunger 2
+                spot.color = PURPLE
+            if i == 25 and j == 2: #dunger 3
+                spot.color = PURPLE
             aux.append([spot])
 
     return aux
