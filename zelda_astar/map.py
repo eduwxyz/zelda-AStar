@@ -6,9 +6,9 @@ import pygame
 
 from zelda_astar.colors import colors
 
-
 colors = colors()
 
+ROWS = 42
 WIDTH = 672
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("Zelda A*")
@@ -70,7 +70,108 @@ class Spot:
             win (pygame.Surface): The window to draw on.
         """
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
+        
+    def make_path(self):
+        self.color = ROSA
+        
+    def get_pos(self):
+        return self.row, self.col
+        
+    def is_barrier(self):
+        return self.color == BLACK
+        
+    def update_neighbors(self,grid):
 
+
+        #breakpoint()
+        self.neighbors = []
+        if self.row < self.total_rows - 1:
+            self.neighbors.append(grid[self.row+1][self.col])
+        if self.row > 0:
+            self.neighbors.append(grid[self.row-1][self.col])
+        if self.col < self.total_rows -1:
+            self.neighbors.append(grid[self.row][self.col +1])
+        if self.col > 0: 
+            self.neighbors.append(grid[self.row][self.col-1])
+        
+    def make_closed(self):
+        self.color = RED
+    
+    def __lt__(self, other):
+        return False
+
+#-------------------------------ALGORITMO A*-----------------------------------#
+
+def h(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
+    return abs(x1 - x2) + abs(y1 - y2)
+
+
+
+def reconstruct_path(came_from, current, draw):
+    while current in came_from:
+        current = came_from[current]
+        breakpoint()
+        current.make_path()
+        draw()
+
+
+
+def algorithm(draw, grid, start, end):
+    count = 0
+    open_set = PriorityQueue()
+    open_set.put((0, count, start))
+    came_from = {}
+    #breakpoint()
+    g_score = {spot: float("inf") for row in grid for spot in row}
+    g_score[start] = 0
+    f_score = {spot: float("inf") for row in grid for spot in row}
+    f_score[start] = h(start.get_pos(), end.get_pos())
+
+    open_set_hash = {start}
+    while not open_set.empty():
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+        #breakpoint()
+        current = open_set.get()[2]
+        open_set_hash.remove(current)
+
+        if current == end:
+            reconstruct_path(came_from, end, draw)
+            print("Achou o caminho")
+            return True
+
+        for neighbor in current.neighbors:
+            temp_g_score = g_score[current] + 1
+
+            if temp_g_score < g_score[neighbor]:
+                breakpoint()
+                came_from[neighbor] = current
+                g_score[neighbor] = temp_g_score
+                f_score[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
+                if neighbor not in open_set_hash:
+                    count += 1
+                    open_set.put((f_score[neighbor], count, neighbor))
+                    open_set_hash.add(neighbor)
+                    neighbor.make_open()
+
+        draw()
+
+        if current != start:
+            current.make_closed()
+
+    return False
+
+
+
+
+
+
+#-------------------------------ALGORITMO A*-----------------------------------#
+        
 
 def read_map() -> dict:
     maps = {}
@@ -106,11 +207,12 @@ def make_grid(maps=read_map(), title= "HYRULE", width=WIDTH) -> List[List[Spot]]
         List[List[Spot]]: The grid of spots.
     """
     grid = maps[title]
+    
     rows = len(grid)
     gap = width // rows
     aux = []
     
-
+    
     # Validar argumentos
     if rows <= 0 or width <= 0:
         raise ValueError("rows and width must be positive integers")
@@ -132,13 +234,12 @@ def make_grid(maps=read_map(), title= "HYRULE", width=WIDTH) -> List[List[Spot]]
         """
         return Spot(i, j, gap, rows, color, cost, t)
 
-    
     for i in range(rows):
+        aux.append([])
         for j in range(rows):
             spot = create_spot(i, j, gap, rows, colors[grid[i][j]]["color"], colors[grid[i][j]]["cost"], grid[i][j])
-            #breakpoint()
             if i == 25 and j == 28: # Posição inicial
-                spot.color = BLACK
+                spot.color = RED
             if i == 7 and j == 6: # Posição final
                 spot.color = ROSA
             if i == 6 and j == 33: #dunger 1
@@ -147,8 +248,10 @@ def make_grid(maps=read_map(), title= "HYRULE", width=WIDTH) -> List[List[Spot]]
                 spot.color = PURPLE
             if i == 25 and j == 2: #dunger 3
                 spot.color = PURPLE
-            aux.append([spot])
+                
+            aux[i].append([spot])
 
+    
     return aux
 
 
@@ -187,11 +290,16 @@ def draw(win, grid: List[List[Spot]], rows: int, width: int) -> None:
     """
 
     for row in grid:
+        #breakpoint()
         for spot in row:
-            spot.draw(win)
+            for aux in spot:
+                aux.draw(win)
+        
 
     draw_grid(win, rows, width)  # Chamar a função para desenhar a grade
     pygame.display.update()
+
+
 
 
 grid = make_grid()
@@ -200,4 +308,15 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
+            
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                for row in grid:
+                    for spot in row:
+                        spot.update_neighbors(grid)
+
+                #breakpoint()
+                algorithm(lambda: draw(WIN, grid, 42, WIDTH), grid, grid[25][28], grid[7][6])
+            
+
     
