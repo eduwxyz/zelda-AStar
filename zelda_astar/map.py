@@ -83,7 +83,7 @@ class Spot:
     def update_neighbors(self,grid):
 
 
-        #breakpoint()
+        ()
         self.neighbors = []
         if self.row < self.total_rows - 1:
             self.neighbors.append(grid[self.row+1][self.col])
@@ -109,12 +109,15 @@ def h(p1, p2):
 
 
 
-def reconstruct_path(came_from, current, draw):
+def reconstruct_path(came_from, current, draw): 
+    list_path = [current]
     while current in came_from:
         current = came_from[current]
-        breakpoint()
+        list_path.append(current)
         current.make_path()
         draw()
+    #breakpoint()
+    return list_path
 
 
 
@@ -123,7 +126,7 @@ def algorithm(draw, grid, start, end):
     open_set = PriorityQueue()
     open_set.put((0, count, start))
     came_from = {}
-    #breakpoint()
+    ()
     g_score = {spot: float("inf") for row in grid for spot in row}
     g_score[start] = 0
     f_score = {spot: float("inf") for row in grid for spot in row}
@@ -135,7 +138,7 @@ def algorithm(draw, grid, start, end):
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-        #breakpoint()
+        ()
         current = open_set.get()[2]
         open_set_hash.remove(current)
 
@@ -148,7 +151,7 @@ def algorithm(draw, grid, start, end):
             temp_g_score = g_score[current] + 1
 
             if temp_g_score < g_score[neighbor]:
-                breakpoint()
+                
                 came_from[neighbor] = current
                 g_score[neighbor] = temp_g_score
                 f_score[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
@@ -290,7 +293,7 @@ def draw(win, grid: List[List[Spot]], rows: int, width: int) -> None:
     """
 
     for row in grid:
-        #breakpoint()
+        ()
         for spot in row:
             for aux in spot:
                 aux.draw(win)
@@ -315,7 +318,7 @@ while True:
                     for spot in row:
                         spot.update_neighbors(grid)
 
-                #breakpoint()
+                ()
                 algorithm(lambda: draw(WIN, grid, 42, WIDTH), grid, grid[25][28], grid[7][6])
             
 
