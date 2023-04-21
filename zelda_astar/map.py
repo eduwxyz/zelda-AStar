@@ -245,48 +245,29 @@ def make_grid(maps: dict, width=WIDTH) -> List[List[Spot]]:
     return win
 
 
-def draw_grid(win, rows: int, width: int) -> None:
+def draw_grid(win, rows, size):
     """
-    Draw the grid lines on the window.
-
-    Args:
-        win (pygame.Surface): The window to draw on.
-        rows (int): The number of rows in the grid.
-        width (int): The width of the grid.
-
-    Returns:
-        None
+    Draw the grid.
     """
-    gap = width // rows
-
+    
+    gap = size // rows
+    
     for i in range(rows):
-        pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap))
+        pygame.draw.line(win, (128,128,128), (0, i * gap), (size, i * gap))
         for j in range(rows):
-            pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
+            pygame.draw.line(win, (128,128,128), (j * gap, 0), (j * gap, size))
 
 
-def draw(win, grid: List[List[Spot]], rows: int, width: int) -> None:
+def draw(win, grid, size, rows) -> None:
     """
-    Draw the grid and the spots on the window.
-
-    Args:
-        win (pygame.Surface): The window to draw on.
-        grid (List[List[Spot]]): The grid of spots.
-        rows (int): The number of rows in the grid.
-        width (int): The width of the grid.
-
-    Returns:
-        None
+    Draw the window.
     """
-
+    
     for row in grid:
-        ()
         for spot in row:
-            for aux in spot:
-                aux.draw(win)
-        
-
-    draw_grid(win, rows, width)  # Chamar a função para desenhar a grade
+            spot.draw(win)
+            
+    draw_grid(win, rows, size)
     pygame.display.update()
 
 
