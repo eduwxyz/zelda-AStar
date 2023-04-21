@@ -1,119 +1,29 @@
-import math
 from queue import PriorityQueue
-from typing import List, Tuple
+from typing import List
 
 import pygame
 
 from zelda_astar.colors import colors
 
-colors = colors()
+COLORS = colors()
 
-ROWS = 42
-WIDTH = 672
-WIN = pygame.display.set_mode((WIDTH, WIDTH))
+SIZE = 672
+WIN = pygame.display.set_mode((SIZE, SIZE))
 pygame.display.set_caption("Zelda A*")
 START_COLOR = (255, 255, 255)  # verde
 END_COLOR = (128, 128, 128)  # preto
-DESTINATIONS = [(25,28), (6, 33), (40, 18), (25, 2), (7,6)]
-COLORS = colors()
+DESTINATIONS = [(25,28), (40, 18), (6, 33), (25, 2), (7,6)]
 
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
+
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-PURPLE = (128, 0, 128)
-ORANGE = (255, 165, 0)
-GREY = (128, 128, 128)
-TURQUOISE = (64, 224, 208)
-ROSA = (255, 0, 255)
 
 
-class Spot:
-    """
-    A class to represent a spot on a grid.
-    """
+def h(start, end):  # Heurística
+    x1, y1 = start
+    x2, y2 = end
+    return abs(x1 + x2) + abs(y1 - y2)
 
-    def __init__(self, row: int, col: int, width: int, total_rows: int, color, cost, t):
-        """
-        Initialize the Spot class.
-
-        Args:
-            row (int): The row index of the spot.
-            col (int): The column index of the spot.
-            width (int): The width of the spot.
-            total_rows (int): The total number of rows in the grid.
-        """
-        self.row = row
-        self.col = col
-        self.x = row * width
-        self.y = col * width
-        self.color = color
-        self.cost = cost
-        self.color = color  # Define a cor como um atributo da classe.
-        self.neighbors = []
-        self.width = width
-        self.total_rows = total_rows
-        self.t = t
-
-    def get_pos(self) -> Tuple[int, int]:
-        """
-        Get the position of the spot.
-
-        Returns:
-            Tuple[int, int]: The row and column index of the spot.
-        """
-        return self.row, self.col
-
-    def draw(self, win: pygame.Surface) -> None:
-        """
-        Draw the spot on the given window.
-
-        Args:
-            win (pygame.Surface): The window to draw on.
-        """
-        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
-        
-    def make_path(self):
-        self.color = ROSA
-        
-    def get_pos(self):
-        return self.row, self.col
-        
-    def is_barrier(self):
-        return self.color == BLACK
-        
-    def update_neighbors(self,grid):
-
-
-        ()
-        self.neighbors = []
-        if self.row < self.total_rows - 1:
-            self.neighbors.append(grid[self.row+1][self.col])
-        if self.row > 0:
-            self.neighbors.append(grid[self.row-1][self.col])
-        if self.col < self.total_rows -1:
-            self.neighbors.append(grid[self.row][self.col +1])
-        if self.col > 0: 
-            self.neighbors.append(grid[self.row][self.col-1])
-        
-    def make_closed(self):
-        self.color = RED
-    
-    def __lt__(self, other):
-        return False
-
-#-------------------------------ALGORITMO A*-----------------------------------#
-
-def h(p1, p2):
-    x1, y1 = p1
-    x2, y2 = p2
-    return abs(x1 - x2) + abs(y1 - y2)
-
-
-
-def reconstruct_path(came_from, current, draw): 
+def reconstruct_path(came_from, current, draw):  # TODO: refazer
     list_path = [current]
     while current in came_from:
         current = came_from[current]
@@ -122,8 +32,6 @@ def reconstruct_path(came_from, current, draw):
         draw()
     #breakpoint()
     return list_path
-
-
 
 def algorithm(draw, grid, start, end):  
     count = 0
@@ -152,6 +60,8 @@ def algorithm(draw, grid, start, end):
 
         if current == end:
             
+            print(current)
+            print(temp_g_score)
             return reconstruct_path(came_from, current, draw)
 
         #breakpoint()
@@ -168,16 +78,79 @@ def algorithm(draw, grid, start, end):
                     count += temp_g_score
                     closed_set.put((f_score[neighbor], count, neighbor))
                     open_set.add(neighbor)
+                    
 
 
 
 
 
 
-#-------------------------------ALGORITMO A*-----------------------------------#
+
+
+
+
+
+
+
+class Spot:
+    """
+    A class to represent a spot on a grid.
+    """
+    
+    def __init__(self, row: int, col: int, size: int, total_rows: int, color, cost) -> None:
+        self.row = row
+        self.col = col
+        self.x = row * size
+        self.y = col * size
+        self.size = size
+        self.total_rows = total_rows
+        self.color = color
+        self.cost = cost
+        self.is_start = False
+        self.is_end = False
+        self.is_intermediate = False
+        self.open = False
+        self.neighbors = []
+        
+    def draw(self, win):
+        if self.is_start:
+            color = (0, 255, 0)
+        elif self.is_end:
+            color = (255, 0, 0)
+        else:
+            color = self.color
+        pygame.draw.rect(win, self.color, (self.y, self.x, self.size, self.size))
+        
+        
+    def is_barrier(self):
+        return self.color == (0, 0, 0) # black
+    
+    def make_path(self):
+        self.color = (128, 0, 128) # purple
+        
+        
+        
+        
+    def update_neighbors(self, grid):
+        self.neighbors = []
+        if self.row < self.total_rows - 1: # DOWN
+            self.neighbors.append(grid[self.row + 1][self.col])
+            
+        if self.row > 0: # UP
+            self.neighbors.append(grid[self.row - 1][self.col])
+            
+        if self.col < self.total_rows - 1: # RIGHT
+            self.neighbors.append(grid[self.row][self.col + 1])
+            
+        if self.col > 0: # LEFT
+            self.neighbors.append(grid[self.row][self.col - 1])
+        
+        
+    def get_pos(self):
+        return self.row, self.col
         
 
-def read_map() -> dict:
+def read_maps() -> dict:
     maps = {}
     
     current_map = ""
@@ -196,10 +169,12 @@ def read_map() -> dict:
                 maps[current_map].append(line)
         
 
+   
     return maps
 
 
-def make_grid(maps: dict, width=WIDTH) -> List[List[Spot]]:
+
+def make_grid(maps: dict, size=SIZE) -> List[List[Spot]]:
     """
     Make the grid.
     """
@@ -207,10 +182,12 @@ def make_grid(maps: dict, width=WIDTH) -> List[List[Spot]]:
     title = "HYRULE"
     grid = maps[title]
     rows = len(grid)
-    gap = width // rows
+    gap = size // rows
     win = []
     
-
+    
+    start_row, start_col = 25, 28
+    end_row, end_col = 7, 6
     
     
     destinations = DESTINATIONS.copy()
@@ -273,16 +250,17 @@ def draw(win, grid, size, rows) -> None:
 
 
 
+
 def main():
     run = True
-    maps = read_map()
+    maps = read_maps()
     grid = make_grid(maps)
     
-    intermediate_points = [(6, 33), (40, 18), (25, 2)]
+    intermediate_points = [(40, 18), (6, 33), (25, 2)]
     
     
     while run:
-        draw(WIN, grid, WIDTH, 42)
+        draw(WIN, grid, SIZE, 42)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -295,18 +273,19 @@ def main():
                             point.update_neighbors(grid)
                             
                             
-                    for i, end_coords in enumerate(intermediate_points):
-                        start_point = grid[25][28]
+                    for i in range(len(DESTINATIONS) - 1):
+                        start_coords = DESTINATIONS[i]
+                        end_coords = DESTINATIONS[i + 1]
+                        start_point = grid[start_coords[0]][start_coords[1]]
                         end_point = grid[end_coords[0]][end_coords[1]]
-                        algorithm(lambda: draw(WIN, grid, WIDTH, 42), grid, start_point, end_point)
-                        start_point = end_point
-                        
-                    end_point = grid[7][6] 
-                    algorithm(lambda: draw(WIN, grid, WIDTH, 42), grid, start_point, end_point)
-            
-
-    
+                        algorithm(lambda: draw(WIN, grid, SIZE, 42), grid, start_point, end_point)
 
 
-if __name__ == "__main__":
+
+
+
+
+
+
+if __name__ == '__main__':
     main()
