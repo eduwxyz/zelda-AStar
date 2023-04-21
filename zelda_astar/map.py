@@ -12,6 +12,10 @@ ROWS = 42
 WIDTH = 672
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("Zelda A*")
+START_COLOR = (255, 255, 255)  # verde
+END_COLOR = (128, 128, 128)  # preto
+DESTINATIONS = [(25,28), (6, 33), (40, 18), (25, 2), (7,6)]
+COLORS = colors()
 
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
@@ -195,64 +199,50 @@ def read_map() -> dict:
     return maps
 
 
-def make_grid(maps=read_map(), title= "HYRULE", width=WIDTH) -> List[List[Spot]]:
+def make_grid(maps: dict, width=WIDTH) -> List[List[Spot]]:
     """
-    Create a grid of spots.
-
-    Args:
-        maps (dict): The maps to create the grid.
-        width (int): The width of the grid.
-
-    Returns:
-        List[List[Spot]]: The grid of spots.
+    Make the grid.
     """
-    grid = maps[title]
     
+    title = "HYRULE"
+    grid = maps[title]
     rows = len(grid)
     gap = width // rows
-    aux = []
+    win = []
+    
+
     
     
-    # Validar argumentos
-    if rows <= 0 or width <= 0:
-        raise ValueError("rows and width must be positive integers")
-
-    def create_spot(i: int, j: int, gap: int, rows: int, color, cost, t) -> Spot:
-        """
-        Create a Spot object.
-
-        Args:
-            i (int): The row index of the spot.
-            j (int): The column index of the spot.
-            gap (int): The width of the spot.
-            rows (int): The total number of rows in the grid.
-            color (Tuple[int, int, int]): The color of the spot.
-            cost (int): The cost of the spot.
-
-        Returns:
-            Spot: The created spot.
-        """
-        return Spot(i, j, gap, rows, color, cost, t)
-
+    destinations = DESTINATIONS.copy()
+    
     for i in range(rows):
-        aux.append([])
+        win.append([])
         for j in range(rows):
-            spot = create_spot(i, j, gap, rows, colors[grid[i][j]]["color"], colors[grid[i][j]]["cost"], grid[i][j])
-            if i == 25 and j == 28: # Posição inicial
-                spot.color = RED
-            if i == 7 and j == 6: # Posição final
-                spot.color = ROSA
-            if i == 6 and j == 33: #dunger 1
-                spot.color = PURPLE
-            if i == 40 and j == 18: #dunger 2
-                spot.color = PURPLE
-            if i == 25 and j == 2: #dunger 3
-                spot.color = PURPLE
+            color = COLORS[grid[i][j]]["color"]
+            cost = COLORS[grid[i][j]]["cost"]
+            
+            if (i,j) == destinations[0]:
+                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot.is_start = True
                 
-            aux[i].append([spot])
-
-    
-    return aux
+            elif (i,j) == destinations[-1]:
+                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot.is_end = True
+                
+                
+            elif (i,j) == destinations[1:-1]:
+                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot.is_intermediate = True
+            else:
+                spot = Spot(i, j, gap, rows, color, cost)
+                
+            
+            win[i].append(spot)
+            
+            
+        
+            
+    return win
 
 
 def draw_grid(win, rows: int, width: int) -> None:
