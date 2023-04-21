@@ -292,21 +292,40 @@ def draw(win, grid: List[List[Spot]], rows: int, width: int) -> None:
 
 
 
-grid = make_grid()
-while True: 
-    draw(WIN, grid, 42, WIDTH)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                for row in grid:
-                    for spot in row:
-                        spot.update_neighbors(grid)
-
-                ()
-                algorithm(lambda: draw(WIN, grid, 42, WIDTH), grid, grid[25][28], grid[7][6])
+def main():
+    run = True
+    maps = read_map()
+    grid = make_grid(maps)
+    
+    intermediate_points = [(6, 33), (40, 18), (25, 2)]
+    
+    
+    while run:
+        draw(WIN, grid, WIDTH, 42)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    for row in grid:
+                        for point in row:
+                            point.update_neighbors(grid)
+                            
+                            
+                    for i, end_coords in enumerate(intermediate_points):
+                        start_point = grid[25][28]
+                        end_point = grid[end_coords[0]][end_coords[1]]
+                        algorithm(lambda: draw(WIN, grid, WIDTH, 42), grid, start_point, end_point)
+                        start_point = end_point
+                        
+                    end_point = grid[7][6] 
+                    algorithm(lambda: draw(WIN, grid, WIDTH, 42), grid, start_point, end_point)
             
 
     
+
+
+if __name__ == "__main__":
+    main()
