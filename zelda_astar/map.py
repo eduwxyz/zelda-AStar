@@ -121,52 +121,49 @@ def reconstruct_path(came_from, current, draw):
 
 
 
-def algorithm(draw, grid, start, end):
+def algorithm(draw, grid, start, end):  
     count = 0
-    open_set = PriorityQueue()
-    open_set.put((0, count, start))
     came_from = {}
-    ()
+    
+    open_set = {start}
+    
+    closed_set = PriorityQueue()
+    closed_set.put((0, count, start))
+    
     g_score = {spot: float("inf") for row in grid for spot in row}
     g_score[start] = 0
+    
+    
     f_score = {spot: float("inf") for row in grid for spot in row}
     f_score[start] = h(start.get_pos(), end.get_pos())
 
-    open_set_hash = {start}
-    while not open_set.empty():
+
+    while not closed_set.empty():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-        ()
-        current = open_set.get()[2]
-        open_set_hash.remove(current)
+        current = closed_set.get()[2]
+        open_set.remove(current)
 
         if current == end:
-            reconstruct_path(came_from, end, draw)
-            print("Achou o caminho")
-            return True
+            
+            return reconstruct_path(came_from, current, draw)
 
+        #breakpoint()
         for neighbor in current.neighbors:
-            temp_g_score = g_score[current] + 1
+            #breakpoint()
+            temp_g_score = g_score[current] + neighbor.cost
 
+            
             if temp_g_score < g_score[neighbor]:
-                
                 came_from[neighbor] = current
                 g_score[neighbor] = temp_g_score
                 f_score[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
-                if neighbor not in open_set_hash:
-                    count += 1
-                    open_set.put((f_score[neighbor], count, neighbor))
-                    open_set_hash.add(neighbor)
-                    neighbor.make_open()
-
-        draw()
-
-        if current != start:
-            current.make_closed()
-
-    return False
+                if neighbor not in open_set:
+                    count += temp_g_score
+                    closed_set.put((f_score[neighbor], count, neighbor))
+                    open_set.add(neighbor)
 
 
 
