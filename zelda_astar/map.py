@@ -37,7 +37,7 @@ def reconstruct_path(came_from, current, draw):
         list_path.append(current)
         current.make_path()
         draw()
-    # breakpoint()
+
     return list_path
 
 
@@ -69,9 +69,7 @@ def algorithm(draw, grid, start, end):
             print(f"END ={end}")
             return reconstruct_path(came_from, current, draw)
 
-        # breakpoint()
         for neighbor in current.neighbors:
-            # breakpoint()
             temp_g_score = g_score[current] + neighbor.cost
 
             if temp_g_score < g_score[neighbor]:
@@ -160,34 +158,10 @@ def read_maps() -> dict:
     return maps
 
 
-def read_dunger() -> dict:
-    maps = {}
-
-    current_map = ""
-    with open("dunger.txt", "r") as file:
-        for line in file:
-            line = line.strip()
-
-            if not line:
-                continue
-
-            if line.startswith("#"):
-                current_map = line.lstrip("#").strip()
-                maps.setdefault(current_map, [])
-
-            else:
-                maps[current_map].append(line)
-
-    breakpoint()
-    return maps
-
-
-def make_grid(maps: dict, size=SIZE) -> List[List[Spot]]:
+def make_grid(maps: dict, title: str, size=SIZE) -> List[List[Spot]]:
     """
     Make the grid.
     """
-
-    title = "HYRULE"
     grid = maps[title]
     rows = len(grid)
     gap = size // rows
@@ -221,54 +195,6 @@ def make_grid(maps: dict, size=SIZE) -> List[List[Spot]]:
             win[i].append(spot)
 
     return win
-
-
-def make_grid_dunger(maps: dict, size=SIZE) -> List[List[Spot]]:
-    """
-    Make the grid.
-    """
-
-    title = "DUNGEON 1"
-    grid = maps[title]
-    rows = len(grid)
-    gap = size // rows
-    win = []
-
-    start_row, start_col = 25, 28
-    end_row, end_col = 7, 6
-
-    destinations = DESTINATIONS.copy()
-
-    for i in range(rows):
-        win.append([])
-        for j in range(rows):
-            color = COLORS[grid[i][j]]["color"]
-            cost = COLORS[grid[i][j]]["cost"]
-
-            if (i, j) == destinations[0]:
-                spot = Spot(i, j, gap, rows, WHITE, 0)
-                spot.is_start = True
-
-            elif (i, j) == destinations[-1]:
-                spot = Spot(i, j, gap, rows, WHITE, 0)
-                spot.is_end = True
-
-            elif (i, j) == destinations[1:-1]:
-                spot = Spot(i, j, gap, rows, WHITE, 0)
-                spot.is_intermediate = True
-            else:
-                spot = Spot(i, j, gap, rows, color, cost)
-
-            win[i].append(spot)
-
-    return win
-
-
-def open_dungeon_window(dungeon_idx):
-    if dungeon_idx not in DUNGEON_WINDOWS:
-        size = DUNGEON_WINDOW_SIZES[dungeon_idx]
-        DUNGEON_WINDOWS[dungeon_idx] = pygame.display.set_mode((size, size))
-    pygame.display.update(DUNGEON_WINDOWS[dungeon_idx])
 
 
 def draw_grid(win, rows, size):
@@ -300,7 +226,7 @@ def draw(win, grid, size, rows) -> None:
 def main():
     run = True
     maps = read_maps()
-    grid = make_grid(maps)
+    grid = make_grid(maps, "HYRULE")
 
     intermediate_points = [(40, 18), (6, 33), (25, 2)]
 
@@ -331,19 +257,50 @@ def main():
                         )
 
                         screen_states.append(WIN.copy())
-                        map_dunger = read_dunger()
-                        grid_dunger = make_grid_dunger(map_dunger)
-                        start_point_dunger = grid_dunger[26][14]
-                        for linha in grid_dunger:
-                            for spot in linha:
-                                spot.update_neighbors(grid_dunger)
-                        end_point_dunger = grid_dunger[1][1]
-                        algorithm(
-                            lambda: draw(WIN, grid_dunger, SIZE, 27),
-                            grid_dunger,
-                            start_point_dunger,
-                            end_point_dunger,
-                        )
+                        map_dunger = read_maps()
+
+                        if i == 0:
+                            grid_dunger = make_grid(map_dunger, "DUNGEON 1")
+                            start_point_dunger = grid_dunger[26][14]
+                            end_point_dunger = grid_dunger[1][1]
+                            for linha in grid_dunger:
+                                for spot in linha:
+                                    spot.update_neighbors(grid_dunger)
+                            algorithm(
+                                lambda: draw(WIN, grid_dunger, SIZE, 27),
+                                grid_dunger,
+                                start_point_dunger,
+                                end_point_dunger,
+                            )
+
+                        elif i == 1:
+                            grid_dunger = make_grid(map_dunger, "DUNGEON 2")
+                            start_point_dunger = grid_dunger[25][13]
+                            end_point_dunger = grid_dunger[1][1]
+                            for linha in grid_dunger:
+                                for spot in linha:
+                                    spot.update_neighbors(grid_dunger)
+                            algorithm(
+                                lambda: draw(WIN, grid_dunger, SIZE, 27),
+                                grid_dunger,
+                                start_point_dunger,
+                                end_point_dunger,
+                            )
+
+                        elif i == 2:
+                            grid_dunger = make_grid(map_dunger, "DUNGEON 3")
+                            start_point_dunger = grid_dunger[25][13]
+                            end_point_dunger = grid_dunger[1][1]
+                            for linha in grid_dunger:
+                                for spot in linha:
+                                    spot.update_neighbors(grid_dunger)
+                            algorithm(
+                                lambda: draw(WIN, grid_dunger, SIZE, 27),
+                                grid_dunger,
+                                start_point_dunger,
+                                end_point_dunger,
+                            )
+
                         # draw(WIN, grid_dunger, SIZE, 42)
                         pygame.display.update()
                         sleep(2)
