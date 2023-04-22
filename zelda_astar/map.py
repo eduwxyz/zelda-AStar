@@ -11,15 +11,8 @@ screen_states = []
 SIZE = 672
 WIN = pygame.display.set_mode((SIZE, SIZE))
 pygame.display.set_caption("Zelda A*")
-START_COLOR = (255, 255, 255)  # verde
-END_COLOR = (128, 128, 128)  # preto
 DESTINATIONS = [(25, 28), (6, 3), (2, 18), (25, 2), (7, 6)]
-DUNGEON_WINDOWS = {}
-DUNGEON_WINDOW_SIZES = {
-    "Dungeon 1": (640, 480),
-    "Dungeon 2": (800, 600),
-    "Dungeon 3": (1024, 768),
-}
+
 
 WHITE = (255, 255, 255)
 
@@ -32,6 +25,7 @@ def h(start, end):  # Heurística
 
 def reconstruct_path(came_from, current, draw):
     list_path = [current]
+    print(list_path)
     while current in came_from:
         current = came_from[current]
         list_path.append(current)
@@ -65,12 +59,11 @@ def algorithm(draw, grid, start, end):
         open_set.remove(current)
 
         if current == end:
-            print(f"START ={start}")
-            print(f"END ={end}")
             return reconstruct_path(came_from, current, draw)
 
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + neighbor.cost
+            print(temp_g_score)
 
             if temp_g_score < g_score[neighbor]:
                 came_from[neighbor] = current
@@ -224,18 +217,19 @@ def draw(win, grid, size, rows) -> None:
 
 
 def main():
-    run = True
+    pygame.init()
+
     maps = read_maps()
     grid = make_grid(maps, "HYRULE")
-
     intermediate_points = [(40, 18), (6, 33), (25, 2)]
+    screen_states = []
 
-    while run:
+    while True:
         draw(WIN, grid, SIZE, 42)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -249,23 +243,50 @@ def main():
 
                         start_point = grid[start_coords[0]][start_coords[1]]
                         end_point = grid[end_coords[0]][end_coords[1]]
+
+                        if i == 0:
+                            dungeon = "DUNGEON 1"
+                            start_dungeon_coords = (26, 14)
+                            end_dungeon_coords = (3, 13)
+                        elif i == 1:
+                            dungeon = "DUNGEON 2"
+                            start_dungeon_coords = (25, 13)
+                            end_dungeon_coords = (2, 13)
+                        elif i == 2:
+                            dungeon = "DUNGEON 3"
+                            start_dungeon_coords = (25, 14)
+                            end_dungeon_coords = (19, 15)
+
                         algorithm(
                             lambda: draw(WIN, grid, SIZE, 42),
                             grid,
-                            start_point,
                             end_point,
+                            start_point,
                         )
 
                         screen_states.append(WIN.copy())
+
                         map_dunger = read_maps()
+                        grid_dunger = make_grid(map_dunger, dungeon)
+                        start_point_dunger = grid_dunger[start_dungeon_coords[0]][
+                            start_dungeon_coords[1]
+                        ]
+                        end_point_dunger = grid_dunger[end_dungeon_coords[0]][
+                            end_dungeon_coords[1]
+                        ]
 
-                        if i == 0:
-                            grid_dunger = make_grid(map_dunger, "DUNGEON 1")
-                            start_point_dunger = grid_dunger[26][14]
-                            end_point_dunger = grid_dunger[1][1]
-                            for linha in grid_dunger:
-                                for spot in linha:
-                                    spot.update_neighbors(grid_dunger)
+                        for linha in grid_dunger:
+                            for spot in linha:
+                                spot.update_neighbors(grid_dunger)
+
+                        algorithm(
+                            lambda: draw(WIN, grid_dunger, SIZE, 27),
+                            grid_dunger,
+                            end_point_dunger,
+                            start_point_dunger,
+                        )
+
+                        if i <= 2:
                             algorithm(
                                 lambda: draw(WIN, grid_dunger, SIZE, 27),
                                 grid_dunger,
@@ -273,40 +294,10 @@ def main():
                                 end_point_dunger,
                             )
 
-                        elif i == 1:
-                            grid_dunger = make_grid(map_dunger, "DUNGEON 2")
-                            start_point_dunger = grid_dunger[25][13]
-                            end_point_dunger = grid_dunger[1][1]
-                            for linha in grid_dunger:
-                                for spot in linha:
-                                    spot.update_neighbors(grid_dunger)
-                            algorithm(
-                                lambda: draw(WIN, grid_dunger, SIZE, 27),
-                                grid_dunger,
-                                start_point_dunger,
-                                end_point_dunger,
-                            )
-
-                        elif i == 2:
-                            grid_dunger = make_grid(map_dunger, "DUNGEON 3")
-                            start_point_dunger = grid_dunger[25][13]
-                            end_point_dunger = grid_dunger[1][1]
-                            for linha in grid_dunger:
-                                for spot in linha:
-                                    spot.update_neighbors(grid_dunger)
-                            algorithm(
-                                lambda: draw(WIN, grid_dunger, SIZE, 27),
-                                grid_dunger,
-                                start_point_dunger,
-                                end_point_dunger,
-                            )
-
-                        # draw(WIN, grid_dunger, SIZE, 42)
-                        pygame.display.update()
                         sleep(2)
 
                 if event.key == pygame.K_BACKSPACE:
-                    # restaura o estado anterior da tela principal
+                    # Restaura o estado anterior da tela principal
                     if screen_states:
                         last_state = screen_states.pop()
                         WIN.blit(last_state, (0, 0))
