@@ -13,7 +13,7 @@ WIN = pygame.display.set_mode((SIZE, SIZE))
 pygame.display.set_caption("Zelda A*")
 START_COLOR = (255, 255, 255)  # verde
 END_COLOR = (128, 128, 128)  # preto
-DESTINATIONS = [(25, 28), (40, 18), (6, 33), (25, 2), (7, 6)]
+DESTINATIONS = [(25, 28), (6, 3), (2, 18), (25, 2), (7, 6)]
 DUNGEON_WINDOWS = {}
 DUNGEON_WINDOW_SIZES = {
     "Dungeon 1": (640, 480),
@@ -65,6 +65,8 @@ def algorithm(draw, grid, start, end):
         open_set.remove(current)
 
         if current == end:
+            print(f"START ={start}")
+            print(f"END ={end}")
             return reconstruct_path(came_from, current, draw)
 
         # breakpoint()
@@ -176,6 +178,7 @@ def read_dunger() -> dict:
             else:
                 maps[current_map].append(line)
 
+    breakpoint()
     return maps
 
 
@@ -330,7 +333,18 @@ def main():
                         screen_states.append(WIN.copy())
                         map_dunger = read_dunger()
                         grid_dunger = make_grid_dunger(map_dunger)
-                        draw(WIN, grid_dunger, SIZE, 42)
+                        start_point_dunger = grid_dunger[26][14]
+                        for linha in grid_dunger:
+                            for spot in linha:
+                                spot.update_neighbors(grid_dunger)
+                        end_point_dunger = grid_dunger[1][1]
+                        algorithm(
+                            lambda: draw(WIN, grid_dunger, SIZE, 27),
+                            grid_dunger,
+                            start_point_dunger,
+                            end_point_dunger,
+                        )
+                        # draw(WIN, grid_dunger, SIZE, 42)
                         pygame.display.update()
                         sleep(2)
 
