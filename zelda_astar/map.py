@@ -11,7 +11,7 @@ screen_states = []
 SIZE = 672
 WIN = pygame.display.set_mode((SIZE, SIZE))
 pygame.display.set_caption("Zelda A*")
-DESTINATIONS = [(25, 28), (6, 3), (2, 18), (25, 2), (7, 6)]
+DESTINATIONS = [(25, 28), (6, 33), (40, 18), (25, 2), (7, 6)]
 TOTAL = 0
 
 WHITE = (255, 255, 255)
@@ -28,6 +28,7 @@ def reconstruct_path(came_from, current, draw, total=0):
     while current in came_from:
         # print(current.cost)
         total = total + current.cost
+        print(f"+ {current.cost}")
         current = came_from[current]
         list_path.append(current)
         current.make_path()
@@ -91,6 +92,7 @@ def algorithm(draw, grid, start, end, flag=False):
                 list_path = [current]
                 while current in came_from:
                     total = total + current.cost
+
                     current = came_from[current]
                     list_path.append(current)
                 return total
@@ -211,13 +213,21 @@ def make_grid(maps: dict, title: str, size=SIZE) -> List[List[Spot]]:
                 spot = Spot(i, j, gap, rows, WHITE, 0)
                 spot.is_start = True
 
-            elif (i, j) == destinations[-1]:
+            elif (i, j) == destinations[1]:
                 spot = Spot(i, j, gap, rows, WHITE, 0)
                 spot.is_end = True
 
-            elif (i, j) == destinations[1:-1]:
+            elif (i, j) == destinations[2]:
                 spot = Spot(i, j, gap, rows, WHITE, 0)
                 spot.is_intermediate = True
+            elif (i, j) == destinations[3]:
+                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot.is_intermediate = True
+
+            elif (i, j) == destinations[4]:
+                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot.is_intermediate = True
+
             else:
                 spot = Spot(i, j, gap, rows, color, cost)
 
@@ -254,7 +264,8 @@ def draw(win, grid, size, rows) -> None:
 
 def main():
     pygame.init()
-
+    TOTAL_PERCORRIDO = 0
+    aux = 0
     maps = read_maps()
     grid = make_grid(maps, "HYRULE")
     intermediate_points = [(40, 18), (6, 33), (25, 2)]
@@ -296,12 +307,14 @@ def main():
                             start_dungeon_coords = (25, 14)
                             end_dungeon_coords = (19, 15)
 
-                        algorithm(
+                        aux = algorithm(
                             lambda: draw(WIN, grid, SIZE, 42),
                             grid,
                             end_point,
                             start_point,
                         )
+
+                        TOTAL_PERCORRIDO += aux
 
                         screen_states.append(WIN.copy())
 
@@ -318,22 +331,28 @@ def main():
                             for spot in linha:
                                 spot.update_neighbors(grid_dunger)
 
-                        algorithm(
+                        aux = algorithm(
                             lambda: draw(WIN, grid_dunger, SIZE, 27),
                             grid_dunger,
                             end_point_dunger,
                             start_point_dunger,
                         )
 
+                        TOTAL_PERCORRIDO += aux
+
                         if i <= 2:
-                            algorithm(
+                            aux = algorithm(
                                 lambda: draw(WIN, grid_dunger, SIZE, 27),
                                 grid_dunger,
                                 start_point_dunger,
                                 end_point_dunger,
                             )
 
+                            TOTAL_PERCORRIDO += aux
+
                         sleep(2)
+
+                print(f"TOTAL PERCORRIDO: {TOTAL_PERCORRIDO}")
 
                 if event.key == pygame.K_BACKSPACE:
                     # Restaura o estado anterior da tela principal
