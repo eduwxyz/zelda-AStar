@@ -12,7 +12,7 @@ SIZE = 672
 WIN = pygame.display.set_mode((SIZE, SIZE))
 pygame.display.set_caption("Zelda A*")
 DESTINATIONS = [(25, 28), (6, 3), (2, 18), (25, 2), (7, 6)]
-
+TOTAL = 0
 
 WHITE = (255, 255, 255)
 
@@ -23,19 +23,46 @@ def h(start, end):  # Heurística
     return abs(x1 + x2) + abs(y1 - y2)
 
 
-def reconstruct_path(came_from, current, draw):
+def reconstruct_path(came_from, current, draw, total=0):
     list_path = [current]
-    print(list_path)
     while current in came_from:
+        # print(current.cost)
+        total = total + current.cost
         current = came_from[current]
         list_path.append(current)
         current.make_path()
+        sleep(0.15)
         draw()
 
-    return list_path
+    # print(TOTAL)
+    return total
 
 
-def algorithm(draw, grid, start, end):
+def best_caminho(WIN, grid):
+    lista_dungers = [grid[6][3], grid[2][18], grid[25][2]]
+    best_cam = []
+    for i in range(3):
+        # breakpoint()
+        total = algorithm(
+            lambda: draw(WIN, grid, SIZE, 42),
+            grid,
+            grid[25][28],
+            lista_dungers[i],
+            True,
+        )
+        best_cam.append((lista_dungers[i], total))
+
+    shortest_distance = float("inf")
+    for dunger, cost in best_cam:
+        # breakpoint()
+        if cost < shortest_distance:
+            shortest_distance = cost
+            best_dunger = dunger
+
+    return best_dunger
+
+
+def algorithm(draw, grid, start, end, flag=False):
     count = 0
     came_from = {}
 
@@ -59,11 +86,20 @@ def algorithm(draw, grid, start, end):
         open_set.remove(current)
 
         if current == end:
-            return reconstruct_path(came_from, current, draw)
+            total = 0
+            if flag:
+                list_path = [current]
+                while current in came_from:
+                    total = total + current.cost
+                    current = came_from[current]
+                    list_path.append(current)
+                return total
+            else:
+                total = reconstruct_path(came_from, current, draw)
+                return total
 
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + neighbor.cost
-            print(temp_g_score)
 
             if temp_g_score < g_score[neighbor]:
                 came_from[neighbor] = current
@@ -236,6 +272,9 @@ def main():
                     for row in grid:
                         for point in row:
                             point.update_neighbors(grid)
+
+                    melhor_caminho = best_caminho(WIN, grid)
+                    print(melhor_caminho)
 
                     for i in range(len(DESTINATIONS) - 1):
                         start_coords = DESTINATIONS[i]
