@@ -8,8 +8,8 @@ def colors() -> List[Tuple[int, int, int]]:
         "F": {"color": (0, 150, 50), "cost": 100},  # GREEN
         "M": {"color": (80, 40, 0), "cost": 150},  # BROWN
         "W": {"color": (0, 150, 255), "cost": 180},  # BLUE
-        "B": {"color": (0, 0, 0), "cost": 200},  # BLACK
-        "C": {"color": (128, 128, 128), "cost": 250},  # GRAY
+        "B": {"color": (0, 0, 0), "cost": 1000},  # BLACK
+        "C": {"color": (128, 128, 128), "cost": 10},  # GRAY
     }
 
     return colors
