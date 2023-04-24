@@ -17,6 +17,7 @@ TOTAL = 0
 WHITE = (255, 255, 255)
 
 
+
 def h(start, end):  # Heurística
     x1, y1 = start
     x2, y2 = end
@@ -32,7 +33,7 @@ def reconstruct_path(came_from, current, draw, total=0):
         current = came_from[current]
         list_path.append(current)
         current.make_path()
-        sleep(0.15)
+        #sleep(1)
         draw()
 
     # print(TOTAL)
@@ -148,7 +149,10 @@ class Spot:
         return self.color == (0, 0, 0)  # black
 
     def make_path(self):
-        self.color = (128, 0, 128)  # purple
+        if self.color == (128, 0, 128):
+            self.color = (71, 0, 71)
+        else:
+            self.color = (128, 0, 128)  # purple
 
     def update_neighbors(self, grid):
         self.neighbors = []
@@ -244,9 +248,9 @@ def draw_grid(win, rows, size):
     gap = size // rows
 
     for i in range(rows):
-        pygame.draw.line(win, (128, 128, 128), (0, i * gap), (size, i * gap))
+        pygame.draw.line(win, (32, 32, 32), (0, i * gap), (size, i * gap))
         for j in range(rows):
-            pygame.draw.line(win, (128, 128, 128), (j * gap, 0), (j * gap, size))
+            pygame.draw.line(win, (32, 32, 32), (j * gap, 0), (j * gap, size))
 
 
 def draw(win, grid, size, rows) -> None:
@@ -270,6 +274,11 @@ def main():
     grid = make_grid(maps, "HYRULE")
     intermediate_points = [(40, 18), (6, 33), (25, 2)]
     screen_states = []
+
+
+    #Inserção de imagem
+    #link = pygame.image.load(r"C:\Users\Isabella\Desktop\astar2\zelda-AStar\img\link.png") 
+    #posicao_imagem = (1, 1)
 
     while True:
         draw(WIN, grid, SIZE, 42)
@@ -320,23 +329,28 @@ def main():
 
                         map_dunger = read_maps()
                         grid_dunger = make_grid(map_dunger, dungeon)
+                        grid_dunger[end_dungeon_coords[0]][
+                            end_dungeon_coords[1]
+                        ].color = (245, 196, 101)
                         start_point_dunger = grid_dunger[start_dungeon_coords[0]][
                             start_dungeon_coords[1]
                         ]
                         end_point_dunger = grid_dunger[end_dungeon_coords[0]][
                             end_dungeon_coords[1]
                         ]
+                        
 
                         for linha in grid_dunger:
                             for spot in linha:
                                 spot.update_neighbors(grid_dunger)
 
-                        aux = algorithm(
+                        if i<=2:
+                            aux = algorithm(
                             lambda: draw(WIN, grid_dunger, SIZE, 27),
                             grid_dunger,
                             end_point_dunger,
                             start_point_dunger,
-                        )
+                            )
 
                         TOTAL_PERCORRIDO += aux
 
