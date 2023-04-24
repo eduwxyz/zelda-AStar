@@ -1,5 +1,4 @@
 from queue import PriorityQueue
-from time import sleep
 
 import pygame
 from spot import Spot

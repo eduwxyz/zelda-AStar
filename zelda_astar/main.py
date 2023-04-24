@@ -3,10 +3,9 @@ from time import sleep
 from typing import List
 
 import pygame
-from algorithms import algorithm, best_caminho, h, reconstruct_path
+from algorithms import algorithm
 from colors import colors
 from map import read_maps
-from spot import Spot
 from visualization import draw, make_grid
 
 COLORS = colors()
