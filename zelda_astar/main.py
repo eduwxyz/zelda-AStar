@@ -15,7 +15,6 @@ SIZE = 672
 WIN = pygame.display.set_mode((SIZE, SIZE))
 pygame.display.set_caption("Zelda A*")
 DESTINATIONS = [(25, 28), (6, 33), (40, 18), (25, 2), (7, 6)]
-TOTAL = 0
 
 WHITE = (255, 255, 255)
 
