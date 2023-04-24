@@ -17,6 +17,7 @@ TOTAL = 0
 WHITE = (255, 255, 255)
 
 
+
 def h(start, end):  # Heurística
     x1, y1 = start
     x2, y2 = end
@@ -32,7 +33,7 @@ def reconstruct_path(came_from, current, draw, total=0):
         current = came_from[current]
         list_path.append(current)
         current.make_path()
-        sleep(0.15)
+        #sleep(1)
         draw()
 
     # print(TOTAL)
@@ -271,8 +272,14 @@ def main():
     intermediate_points = [(40, 18), (6, 33), (25, 2)]
     screen_states = []
 
+
+    #Inserção de imagem
+    #link = pygame.image.load(r"C:\Users\Isabella\Desktop\astar2\zelda-AStar\assets\link.png") 
+    #posicao_imagem = (1, 1)
+
     while True:
         draw(WIN, grid, SIZE, 42)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
