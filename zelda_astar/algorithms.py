@@ -65,7 +65,7 @@ def reconstruct_path(came_from: Dict[Any, Any], current: Any, draw: Callable, to
     list_path = [current]
     while current in came_from:
         total = total + current.cost
-        print(f"+ {current.cost}")
+        print(f"+ LINHA: {current.row} / COLUNA: {current.col} / CUSTO: {current.cost}")
         current = came_from[current]
         list_path.append(current)
         current.make_path()

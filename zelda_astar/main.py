@@ -91,7 +91,7 @@ def main():
 
                         if i<=2:
                             aux = algorithm(
-                            lambda: draw(WIN, grid_dunger, SIZE, 27),
+                            lambda: draw(WIN, grid_dunger, SIZE, 28),
                             grid_dunger,
                             end_point_dunger,
                             start_point_dunger,
@@ -101,7 +101,7 @@ def main():
 
                         if i <= 2:
                             aux = algorithm(
-                                lambda: draw(WIN, grid_dunger, SIZE, 27),
+                                lambda: draw(WIN, grid_dunger, SIZE, 28),
                                 grid_dunger,
                                 start_point_dunger,
                                 end_point_dunger,
