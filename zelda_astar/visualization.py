@@ -53,11 +53,16 @@ def make_grid(maps: dict, title: str, size=SIZE) -> List[List[Spot]]:
     return win
 
 
-def draw_grid(win, rows, size):
+def draw_grid(win: pygame.Surface, rows: int, size: int) -> None:
     """
-    Draw the grid.
-    """
+    Desenha a grade na tela.
 
+    Parameters:
+        win (pygame.Surface): Janela do pygame.
+        rows (int): Número de linhas e colunas da grade.
+        size (int): Tamanho da janela em pixels.
+    """
+    
     gap = size // rows
 
     for i in range(rows):
@@ -66,9 +71,16 @@ def draw_grid(win, rows, size):
             pygame.draw.line(win, (32, 32, 32), (j * gap, 0), (j * gap, size))
 
 
-def draw(win, grid, size, rows) -> None:
+
+def draw(win: pygame.Surface, grid: List[List[Spot]], size: int, rows: int) -> None:
     """
-    Draw the window.
+    Desenha a janela.
+
+    Parâmetros:
+        - win: a janela na qual o desenho será feito (pygame.Surface)
+        - grid: a matriz de espaços que será desenhada (List[List[Spot]])
+        - size: o tamanho em pixels da janela (int)
+        - rows: o número de linhas da matriz de espaços (int)
     """
 
     for row in grid:

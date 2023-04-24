@@ -15,5 +15,5 @@ def read_maps() -> dict:
 
             else:
                 maps[current_map].append(line)
- 
+
     return maps
