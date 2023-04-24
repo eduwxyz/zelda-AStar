@@ -280,7 +280,6 @@ def main():
     while True:
         draw(WIN, grid, SIZE, 42)
 
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -338,16 +337,17 @@ def main():
                             for spot in linha:
                                 spot.update_neighbors(grid_dunger)
 
-                        aux = algorithm(
+                        if i<=2:
+                            aux = algorithm(
                             lambda: draw(WIN, grid_dunger, SIZE, 27),
                             grid_dunger,
                             end_point_dunger,
                             start_point_dunger,
-                        )
+                            )
 
                         TOTAL_PERCORRIDO += aux
 
-                        if i <= 2:
+                        if i <= 1:
                             aux = algorithm(
                                 lambda: draw(WIN, grid_dunger, SIZE, 27),
                                 grid_dunger,
