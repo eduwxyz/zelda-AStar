@@ -1,66 +1,125 @@
+from queue import PriorityQueue
+from time import sleep
+from typing import List
+
 import pygame
-from mapa import mapa_principal
+from algorithms import algorithm, best_caminho, h, reconstruct_path
+from colors import colors
+from map import read_maps
+from spot import Spot
+from visualization import draw, make_grid
 
-# Define a largura e altura de cada célula
-LARGURA = 42
-ALTURA = 42
+COLORS = colors()
+screen_states = []
+SIZE = 672
+WIN = pygame.display.set_mode((SIZE, SIZE))
+pygame.display.set_caption("Zelda A*")
+DESTINATIONS = [(25, 28), (6, 33), (40, 18), (25, 2), (7, 6)]
+TOTAL = 0
 
-# Define o tamanho da janela
-
-mapa = mapa_principal()
-JANELA_LARGURA = len(mapa) * LARGURA
-JANELA_ALTURA = len(mapa) * ALTURA
-
-GREEN = (0, 255, 0)
-LIGHT_GREEN = (144, 238, 144)
-BLUE = (0, 0, 255)
-LIGHT_BLUE = (173, 216, 230)
-BROWN = (165, 42, 42)
-LIGHT_BROWN = (244, 164, 96)
-DARK_GREEN = (34, 139, 34)
-# Define as constantes para os tipos de terreno e seus respectivos custos
-GRAMA = 10
-AREIA = 20
-FLORESTA = 100
-MONTANHA = 150
-AGUA = 180
-
-# Cria a janela
-tela = pygame.display.set_mode((JANELA_LARGURA, JANELA_ALTURA))
-# Define o título da janela
-pygame.display.set_caption("Mapa de Hyrule")
+WHITE = (255, 255, 255)
 
 
-def desenhar_celula(tela, cor, x, y):
-            pygame.draw.rect(tela, cor, (x*LARGURA, y*ALTURA, LARGURA, ALTURA))
+def main():
+    pygame.init()
+    TOTAL_PERCORRIDO = 0
+    aux = 0
+    maps = read_maps()
+    grid = make_grid(maps, "HYRULE")
+    screen_states = []
 
-class Mapa:
-    def __init__(self, mapa):
-        self.mapa = mapa
-        self.cores_celulas = {
-            GRAMA: LIGHT_GREEN,
-            AREIA: LIGHT_BROWN,
-            FLORESTA: DARK_GREEN,
-            MONTANHA: BROWN,
-            AGUA: LIGHT_BLUE
-        }
-    
+    while True:
+        draw(WIN, grid, SIZE, 42)
 
-    def desenhar(self, tela):
-        for y, linha in enumerate(self.mapa):
-            for x, celula in enumerate(linha):
-                cor = self.cores_celulas.get(celula)
-                desenhar_celula(tela, cor, x, y)
-                
-        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
-mapa = Mapa(mapa)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    for row in grid:
+                        for point in row:
+                            point.update_neighbors(grid)
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            
+                    for i in range(len(DESTINATIONS) - 1):
+                        start_coords = DESTINATIONS[i]
+                        end_coords = DESTINATIONS[i + 1]
 
-    mapa.desenhar(tela)
-    pygame.display.update()
+                        start_point = grid[start_coords[0]][start_coords[1]]
+                        end_point = grid[end_coords[0]][end_coords[1]]
+
+                        if i == 0:
+                            dungeon = "DUNGEON 1"
+                            start_dungeon_coords = (26, 14)
+                            end_dungeon_coords = (3, 13)
+                        elif i == 1:
+                            dungeon = "DUNGEON 2"
+                            start_dungeon_coords = (25, 13)
+                            end_dungeon_coords = (2, 13)
+                        elif i == 2:
+                            dungeon = "DUNGEON 3"
+                            start_dungeon_coords = (25, 14)
+                            end_dungeon_coords = (19, 15)
+
+                        aux = algorithm(
+                            lambda: draw(WIN, grid, SIZE, 42),
+                            grid,
+                            end_point,
+                            start_point,
+                        )
+
+                        TOTAL_PERCORRIDO += aux
+
+                        screen_states.append(WIN.copy())
+
+                        map_dunger = read_maps()
+                        grid_dunger = make_grid(map_dunger, dungeon)
+                        grid_dunger[end_dungeon_coords[0]][
+                            end_dungeon_coords[1]
+                        ].color = (245, 196, 101)
+                        start_point_dunger = grid_dunger[start_dungeon_coords[0]][
+                            start_dungeon_coords[1]
+                        ]
+                        end_point_dunger = grid_dunger[end_dungeon_coords[0]][
+                            end_dungeon_coords[1]
+                        ]
+                        
+
+                        for linha in grid_dunger:
+                            for spot in linha:
+                                spot.update_neighbors(grid_dunger)
+
+                        if i<=2:
+                            aux = algorithm(
+                            lambda: draw(WIN, grid_dunger, SIZE, 27),
+                            grid_dunger,
+                            end_point_dunger,
+                            start_point_dunger,
+                            )
+
+                        TOTAL_PERCORRIDO += aux
+
+                        if i <= 2:
+                            aux = algorithm(
+                                lambda: draw(WIN, grid_dunger, SIZE, 27),
+                                grid_dunger,
+                                start_point_dunger,
+                                end_point_dunger,
+                            )
+
+                            TOTAL_PERCORRIDO += aux
+
+                        sleep(2)
+
+                print(f"TOTAL PERCORRIDO: {TOTAL_PERCORRIDO}")
+
+                if event.key == pygame.K_BACKSPACE:
+                    # Restaura o estado anterior da tela principal
+                    if screen_states:
+                        last_state = screen_states.pop()
+                        WIN.blit(last_state, (0, 0))
+                        pygame.display.update()
+
+
+if __name__ == "__main__":
+    main()
