@@ -15,5 +15,5 @@ Pygame
 **3. Instale as dependências: pip install pygame**
 
 ### Execução
-Para executar o projeto, utilize o comando: *python map.py*
+Para executar o projeto, utilize o seguinte comando: *python main.py*
 Em seguida, pressione a tecla BACKSPACE para que o algoritmo inicie.
