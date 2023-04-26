@@ -14,7 +14,7 @@ SIZE = 672
 WIN = pygame.display.set_mode((SIZE, SIZE))
 pygame.display.set_caption("Zelda A*")
 DESTINATIONS = [(25, 28), (6, 33), (40, 18), (25, 2), (7, 6)]
-
+BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 
@@ -86,6 +86,10 @@ def main():
                         for linha in grid_dunger:
                             for spot in linha:
                                 spot.update_neighbors(grid_dunger)
+                                
+                        grid_dunger[25][2].color = BLACK
+                        grid_dunger[7][6].color = BLACK
+                    
 
                         if i<=2:
                             aux = algorithm(
