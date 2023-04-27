@@ -8,6 +8,8 @@ COLORS = colors()
 SIZE = 672
 DESTINATIONS = [(25, 28), (6, 33), (40, 18), (25, 2), (7, 6)]
 WHITE = (255, 255, 255)
+BLACK_BROW = (51, 0, 25)
+WIN = pygame.display.set_mode((SIZE, SIZE))
 
 def make_grid(maps: dict, title: str, size=SIZE) -> List[List[Spot]]:
     """
@@ -31,18 +33,18 @@ def make_grid(maps: dict, title: str, size=SIZE) -> List[List[Spot]]:
                 spot.is_start = True
 
             elif (i, j) == destinations[1]:
-                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot = Spot(i, j, gap, rows, BLACK_BROW, 0)
                 spot.is_end = True
 
             elif (i, j) == destinations[2]:
-                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot = Spot(i, j, gap, rows, BLACK_BROW, 0)
                 spot.is_intermediate = True
             elif (i, j) == destinations[3]:
-                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot = Spot(i, j, gap, rows, BLACK_BROW, 0)
                 spot.is_intermediate = True
 
             elif (i, j) == destinations[4]:
-                spot = Spot(i, j, gap, rows, WHITE, 0)
+                spot = Spot(i, j, gap, rows, (245, 196, 101), 0)
                 spot.is_intermediate = True
 
             else:
